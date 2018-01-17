@@ -25,6 +25,18 @@ public class Id3 {
 
     private void buildTree(TreeNode parent, List<Sample> samples, List<Feature> features) {
         final Tree tree = parent.getTree();
+
+        double firstValue = samples.get(0).getValue();
+        Boolean unique = !samples
+                .stream()
+                .anyMatch(sample -> firstValue != sample.getValue());
+
+        if (unique) {
+            TreeNode leaf = tree.addNode(firstValue);
+            tree.putEdge(parent, leaf);
+            return;
+        }
+
         for (Feature feature : features) {
             double metric = entropy(samples
                     .stream()
@@ -58,6 +70,7 @@ public class Id3 {
                         .stream()
                         .filter(sample -> featureValue == sample.getFeatureValue(winner))
                         .collect(Collectors.toList());
+
                 List<Feature> sucFeatures = features
                         .stream()
                         .filter(feature -> winner != feature)

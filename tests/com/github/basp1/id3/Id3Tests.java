@@ -67,6 +67,30 @@ public class Id3Tests {
     }
 
     @Test
+    public void testId3Pruning() {
+        Id3 id3 = new Id3(outlook, temp, humidity, wind);
+
+        id3.add(40, rainy, hot, high, calm);
+        id3.add(10, rainy, cool, high, calm);
+        id3.add(10, rainy, cool, normal, calm);
+        id3.add(10, sunny, cool, normal, calm);
+        id3.add(10, rainy, cool, normal, windy);
+        id3.add(10, overcast, cool, high, windy);
+        id3.add(10, overcast, cool, normal, calm);
+        id3.add(10, sunny, cool, high, windy);
+
+        Tree tree = id3.buildTree();
+
+        assertEquals(6, tree.getNodes().size());
+
+        double answer = tree.eval(rainy, cool, normal, calm);
+        assertEquals(10, answer, 1e-8);
+
+        answer = tree.eval(sunny, hot, high, calm);
+        assertEquals(40, answer, 1e-8);
+    }
+
+    @Test
     public void testEntropy() {
         List<Integer> list = Arrays.asList(1, 2, 0, 2, 2, 1, 1, 1, 0);
         double entropy = Id3.entropy(list);
