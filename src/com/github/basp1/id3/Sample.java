@@ -1,25 +1,27 @@
 package com.github.basp1.id3;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Sample {
     final double value;
-    final Map<Integer, FeatureValue> featureValues;
+    final Map<Integer, FeatureSample> featureSamples;
 
-    public Sample(double value, FeatureValue... featureValues) {
+    public Sample(double value, FeatureSample... featureSamples) {
         this.value = value;
-        this.featureValues = new HashMap<>();
-        for (FeatureValue featureValue : featureValues) {
-            this.featureValues.put(featureValue.getFeature().hashCode(), featureValue);
+        this.featureSamples = new HashMap<>();
+        for (FeatureSample featureSample : featureSamples) {
+            this.featureSamples.put(featureSample.getFeature().hashCode(), featureSample);
         }
     }
 
-    public Collection<FeatureValue> getFeatureValues() {
-        return featureValues.values();
+    public Collection<FeatureSample> getFeatureSamples() {
+        return featureSamples.values();
     }
 
-    public FeatureValue getFeatureValue(Feature feature) {
-        return featureValues.get(feature.hashCode());
+    public FeatureSample getFeatureSample(Feature feature) {
+        return featureSamples.get(feature.hashCode());
     }
 
     public double getValue() {

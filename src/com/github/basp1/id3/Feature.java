@@ -7,11 +7,11 @@ import java.util.Map;
 public class Feature {
     private String name;
     private double metric;
-    private Map<String, FeatureValue> values;
+    private Map<String, FeatureSample> samples;
 
     public Feature(String name) {
         this.name = name;
-        this.values = new HashMap<>();
+        this.samples = new HashMap<>();
         this.metric = 0;
     }
 
@@ -23,26 +23,32 @@ public class Feature {
         return name;
     }
 
-    public FeatureValue assume(String name, Integer value) {
-        FeatureValue featureValue = new FeatureValue(this, name, value);
-        values.put(name, featureValue);
-        return featureValue;
+    public FeatureSample assume(String name, Integer value) {
+        FeatureSample featureSample = new FeatureSample(this, name, value, value);
+        samples.put(name, featureSample);
+        return featureSample;
     }
 
-    public Collection<FeatureValue> getFeatureValues() {
-        return values.values();
+    public FeatureSample assume(String name, double spanStart, double spanEnd) {
+        FeatureSample featureSample = new FeatureSample(this, name, spanStart, spanEnd);
+        samples.put(name, featureSample);
+        return featureSample;
     }
 
-    public FeatureValue getFeatureValue(String name) {
-        return values.get(name);
+    public Collection<FeatureSample> getFeatureSamples() {
+        return samples.values();
     }
 
-    public void setMetric(double metric) {
-        this.metric = metric;
+    public FeatureSample getFeatureSample(String name) {
+        return samples.get(name);
     }
 
     public double getMetric() {
         return metric;
+    }
+
+    public void setMetric(double metric) {
+        this.metric = metric;
     }
 
     @Override

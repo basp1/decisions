@@ -3,19 +3,17 @@ package com.github.basp1.id3;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class Id3Tests {
     Feature outlook, temp, humidity, wind;
-    FeatureValue rainy, overcast, sunny;
-    FeatureValue hot, mild, cool;
-    FeatureValue low, normal, high;
-    FeatureValue windy, calm;
+    FeatureSample rainy, overcast, sunny;
+    FeatureSample hot, mild, cool;
+    FeatureSample low, normal, high;
+    FeatureSample windy, calm;
 
     public Id3Tests() {
         this.outlook = new Feature("Outlook");

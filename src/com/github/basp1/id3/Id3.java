@@ -13,8 +13,30 @@ public class Id3 {
         this.samples = new ArrayList<>();
     }
 
-    public void add(double value, FeatureValue... featureValues) {
-        samples.add(new Sample(value, featureValues));
+    public static <T> double entropy(Collection<T> values) {
+        Map<T, Double> probs = new HashMap<>();
+        for (T v : values) {
+            if (!probs.containsKey(v)) {
+                probs.put(v, 0d);
+            }
+            probs.put(v, 1d + probs.get(v));
+        }
+
+        double sz = values.size();
+        for (T k : probs.keySet()) {
+            probs.put(k, probs.get(k) / sz);
+        }
+
+        double sum = 0;
+        for (Double p : probs.values()) {
+            sum += -p * Math.log(p) / Math.log(2);
+        }
+
+        return sum;
+    }
+
+    public void add(double value, FeatureSample... featureSamples) {
+        samples.add(new Sample(value, featureSamples));
     }
 
     public Tree buildTree() {
@@ -40,7 +62,7 @@ public class Id3 {
         for (Feature feature : features) {
             double metric = entropy(samples
                     .stream()
-                    .map(sample -> sample.getFeatureValue(feature)).collect(Collectors.toList()));
+                    .map(sample -> sample.getFeatureSample(feature)).collect(Collectors.toList()));
             feature.setMetric(metric);
         }
 
@@ -65,10 +87,10 @@ public class Id3 {
             TreeNode node = tree.addNode(winner);
             tree.putEdge(parent, node);
 
-            for (FeatureValue featureValue : winner.getFeatureValues()) {
+            for (FeatureSample featureSample : winner.getFeatureSamples()) {
                 List<Sample> sucSamples = samples
                         .stream()
-                        .filter(sample -> featureValue == sample.getFeatureValue(winner))
+                        .filter(sample -> featureSample == sample.getFeatureSample(winner))
                         .collect(Collectors.toList());
 
                 List<Feature> sucFeatures = features
@@ -80,7 +102,7 @@ public class Id3 {
                     continue;
                 }
 
-                TreeNode suc = tree.addNode(featureValue);
+                TreeNode suc = tree.addNode(featureSample);
 
                 tree.putEdge(node, suc);
 
@@ -91,27 +113,5 @@ public class Id3 {
 
     private Object selectEnd(List<Object> values) {
         return values.get(0);
-    }
-
-    public static <T> double entropy(Collection<T> values) {
-        Map<T, Double> probs = new HashMap<>();
-        for (T v : values) {
-            if (!probs.containsKey(v)) {
-                probs.put(v, 0d);
-            }
-            probs.put(v, 1d + probs.get(v));
-        }
-
-        double sz = values.size();
-        for (T k : probs.keySet()) {
-            probs.put(k, probs.get(k) / sz);
-        }
-
-        double sum = 0;
-        for (Double p : probs.values()) {
-            sum += -p * Math.log(p) / Math.log(2);
-        }
-
-        return sum;
     }
 }

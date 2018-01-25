@@ -31,8 +31,8 @@ public class Tree {
         return root;
     }
 
-    public double eval(FeatureValue... featureValues) {
-        Sample sample = new Sample(Double.NaN, featureValues);
+    public double eval(FeatureSample... featureSamples) {
+        Sample sample = new Sample(Double.NaN, featureSamples);
         TreeNode node = getRoot();
         while (null != node) {
             TreeNode suc = node.getSuccessors()
@@ -45,11 +45,12 @@ public class Tree {
             }
 
             Feature feature = (Feature) suc.getValue();
-            Integer value = sample.getFeatureValue(feature).getValue();
+            double[] span = sample.getFeatureSample(feature).getSpan();
+            double value = (span[1] + span[0]) / 2;
 
             node = suc.getSuccessors()
                     .stream()
-                    .min(Comparator.comparingInt(a -> Math.abs(value - ((FeatureValue) a.getValue()).getValue())))
+                    .min(Comparator.comparingDouble(a -> ((FeatureSample) a.getValue()).distance(value)))
                     .get();
         }
 
