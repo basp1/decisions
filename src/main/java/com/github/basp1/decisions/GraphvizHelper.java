@@ -1,4 +1,4 @@
-package com.github.basp1.id3;
+package com.github.basp1.decisions;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;

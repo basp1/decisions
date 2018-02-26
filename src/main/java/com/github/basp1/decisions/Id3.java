@@ -1,16 +1,11 @@
-package com.github.basp1.id3;
+package com.github.basp1.decisions;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class Id3 {
-    ArrayList<Feature> features;
-    ArrayList<Sample> samples;
+    public Id3() {
 
-    public Id3(Feature... features) {
-        this.features = new ArrayList<>();
-        this.features.addAll(Arrays.asList(features));
-        this.samples = new ArrayList<>();
     }
 
     public static <T> double entropy(Collection<T> values) {
@@ -35,32 +30,30 @@ public class Id3 {
         return sum;
     }
 
-    public void add(double value, FeatureSample... featureSamples) {
-        samples.add(new Sample(value, featureSamples));
-    }
-
-    public Tree buildTree() {
+    public Tree buildTree(Dataset dataset) {
         Tree tree = new Tree();
-        buildTree(tree.getRoot(), samples, features);
+        buildTree(tree, tree.getRoot(), dataset, dataset.getFeatures());
         return tree;
     }
 
-    private void buildTree(TreeNode parent, List<Sample> samples, List<Feature> features) {
-        final Tree tree = parent.getTree();
-
-        double firstValue = samples.get(0).getValue();
-        Boolean unique = !samples
+    private void buildTree(Tree tree, TreeNode parent, Dataset dataset, Collection<Feature> features) {
+        Object firstValue = dataset.first().getValue();
+        Boolean allTheSame = !dataset
                 .stream()
-                .anyMatch(sample -> firstValue != sample.getValue());
+                .anyMatch(sample -> !firstValue.equals(sample.getValue()));
 
-        if (unique) {
-            TreeNode leaf = tree.addNode(firstValue);
+        if (allTheSame) {
+            List<Object> values = dataset
+                    .stream()
+                    .map(sample -> sample.getValue())
+                    .collect(Collectors.toList());
+            TreeNode leaf = tree.addNode(values);
             tree.putEdge(parent, leaf);
             return;
         }
 
         for (Feature feature : features) {
-            double metric = entropy(samples
+            double metric = entropy(dataset
                     .stream()
                     .map(sample -> sample.getFeatureSample(feature)).collect(Collectors.toList()));
             feature.setMetric(metric);
@@ -77,21 +70,22 @@ public class Id3 {
                 .orElse(null);
 
         if (null == winner) {
-            Object value = selectEnd(samples
+            List<Object> values = dataset
                     .stream()
                     .map(sample -> sample.getValue())
-                    .collect(Collectors.toList()));
-            TreeNode leaf = tree.addNode(value);
+                    .collect(Collectors.toList());
+            TreeNode leaf = tree.addNode(values);
             tree.putEdge(parent, leaf);
         } else {
             TreeNode node = tree.addNode(winner);
             tree.putEdge(parent, node);
 
             for (FeatureSample featureSample : winner.getFeatureSamples()) {
-                List<Sample> sucSamples = samples
+                Dataset sucSamples = new Dataset();
+                sucSamples.addAll(dataset
                         .stream()
                         .filter(sample -> featureSample == sample.getFeatureSample(winner))
-                        .collect(Collectors.toList());
+                        .collect(Collectors.toList()));
 
                 List<Feature> sucFeatures = features
                         .stream()
@@ -106,12 +100,8 @@ public class Id3 {
 
                 tree.putEdge(node, suc);
 
-                buildTree(suc, sucSamples, sucFeatures);
+                buildTree(tree, suc, sucSamples, sucFeatures);
             }
         }
-    }
-
-    private Object selectEnd(List<Object> values) {
-        return values.get(0);
     }
 }

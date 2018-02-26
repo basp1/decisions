@@ -1,8 +1,9 @@
-package com.github.basp1.id3;
+package com.github.basp1.decisions;
 
 public class FeatureSample {
     private Feature feature;
     private String name;
+    private double value;
     private double spanStart;
     private double spanEnd;
 
@@ -31,11 +32,23 @@ public class FeatureSample {
     }
 
     public double distance(double value) {
-        return Math.min(Math.abs(value - spanStart), Math.abs(value - spanEnd));
+        if (value > spanStart && value < spanEnd) {
+            return 0;
+        } else {
+            return Math.min(Math.abs(value - spanStart), Math.abs(value - spanEnd));
+        }
     }
 
     @Override
     public String toString() {
         return getName();
+    }
+
+    public double getValue() {
+        return value;
+    }
+
+    public void setValue(double value) {
+        this.value = value;
     }
 }

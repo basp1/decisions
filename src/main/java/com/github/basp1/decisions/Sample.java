@@ -1,14 +1,14 @@
-package com.github.basp1.id3;
+package com.github.basp1.decisions;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Sample {
-    final double value;
+    final Object value;
     final Map<Integer, FeatureSample> featureSamples;
 
-    public Sample(double value, FeatureSample... featureSamples) {
+    public Sample(Object value, FeatureSample... featureSamples) {
         this.value = value;
         this.featureSamples = new HashMap<>();
         for (FeatureSample featureSample : featureSamples) {
@@ -24,7 +24,7 @@ public class Sample {
         return featureSamples.get(feature.hashCode());
     }
 
-    public double getValue() {
+    public Object getValue() {
         return value;
     }
 }

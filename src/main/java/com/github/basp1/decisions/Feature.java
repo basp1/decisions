@@ -1,6 +1,7 @@
-package com.github.basp1.id3;
+package com.github.basp1.decisions;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,5 +55,14 @@ public class Feature {
     @Override
     public String toString() {
         return getName();
+    }
+
+    public FeatureSample selectFeatureSample(double value) {
+        FeatureSample featureSample = samples.values()
+                .stream()
+                .min(Comparator.comparingDouble(a -> a.distance(value)))
+                .get();
+        featureSample.setValue(value);
+        return featureSample;
     }
 }
