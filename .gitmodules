@@ -1,0 +1,3 @@
+[submodule "extralib"]
+	path = extralib
+	url = ../extralib.git
