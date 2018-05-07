@@ -1,5 +1,7 @@
 package com.github.basp1.decisions;
 
+import com.github.basp1.extralib.TreeNode;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -30,13 +32,13 @@ public class Id3 {
         return sum;
     }
 
-    public Tree buildTree(Dataset dataset) {
-        Tree tree = new Tree();
+    public DecisionTree buildTree(Dataset dataset) {
+        DecisionTree tree = new DecisionTree();
         buildTree(tree, tree.getRoot(), dataset, dataset.getFeatures());
         return tree;
     }
 
-    private void buildTree(Tree tree, TreeNode parent, Dataset dataset, Collection<Feature> features) {
+    private void buildTree(DecisionTree tree, TreeNode parent, Dataset dataset, Collection<Feature> features) {
         Object firstValue = dataset.first().getValue();
         Boolean allTheSame = !dataset
                 .stream()

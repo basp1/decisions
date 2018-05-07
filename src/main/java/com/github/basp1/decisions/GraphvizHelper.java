@@ -1,5 +1,7 @@
 package com.github.basp1.decisions;
 
+import com.github.basp1.extralib.TreeNode;
+
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.HashSet;
@@ -7,7 +9,7 @@ import java.util.Set;
 import java.util.Stack;
 
 public class GraphvizHelper {
-    public static void Save(Tree tree, String filename) throws FileNotFoundException {
+    public static void Save(DecisionTree tree, String filename) throws FileNotFoundException {
         PrintWriter out = new PrintWriter(filename);
 
         Set<TreeNode> visited = new HashSet<>();

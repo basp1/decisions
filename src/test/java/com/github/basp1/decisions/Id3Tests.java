@@ -28,7 +28,7 @@ public class Id3Tests {
         ds.add(30, Data.sunny, Data.mild, Data.high, Data.windy);
 
         Id3 id3 = new Id3();
-        Tree tree = id3.buildTree(ds);
+        DecisionTree tree = id3.buildTree(ds);
 
         List<Integer> answer = (List<Integer>) tree.eval(Data.overcast, Data.mild, Data.high, Data.windy);
         assertEquals(62, (int) answer.get(0), 1e-8);
@@ -50,7 +50,7 @@ public class Id3Tests {
         ds.add(10, Data.sunny, Data.cool, Data.high, Data.windy);
 
         Id3 id3 = new Id3();
-        Tree tree = id3.buildTree(ds);
+        DecisionTree tree = id3.buildTree(ds);
         assertEquals(6, tree.getNodes().size());
 
         List<Integer> answer = (List<Integer>) tree.eval(Data.rainy, Data.cool, Data.normal, Data.calm);
