@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.basp1</groupId>
-    <artifactId>id3</artifactId>
+    <artifactId>decisions</artifactId>
     <version>0.1.0</version>
 
     <build>
